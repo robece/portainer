@@ -1,0 +1,46 @@
+trigger:
+  - main
+
+pool:
+  name: Default
+
+variables:
+  - name: REPO_PATH
+    value: C:\repos\portainer
+  - name: REPO_URL
+    value: https://$(GITHUB_PAT)@github.com/robece/portainer.git
+  - name: DEPLOY_PATH
+    value: C:\deploy\$(Build.DefinitionName)
+
+steps:
+  - powershell: |
+      git config --global core.autocrlf false
+      if (Test-Path "$(REPO_PATH)\.git") {
+        Write-Host "[*] Repo exists, pulling latest..."
+        git -C "$(REPO_PATH)" pull "https://$(GITHUB_PAT)@github.com/robece/portainer.git"
+      } else {
+        Write-Host "[*] First deploy, cloning repo..."
+        New-Item -ItemType Directory -Force -Path "C:\repos" | Out-Null
+        git clone "$(REPO_URL)" "$(REPO_PATH)"
+      }
+    displayName: Clone or pull repo
+
+  - powershell: |
+      git -C "$(REPO_PATH)" config core.autocrlf false
+      git -C "$(REPO_PATH)" rm --cached -r . | Out-Null
+      git -C "$(REPO_PATH)" reset --hard
+    displayName: Fix line endings
+
+  - powershell: |
+      $ErrorActionPreference = 'SilentlyContinue'
+      docker stop portainer
+      docker rm portainer
+      $ErrorActionPreference = 'Continue'
+    displayName: Remove existing containers
+
+  - powershell: |
+      cd "$(REPO_PATH)"
+      New-Item -ItemType Directory -Force -Path "$(DEPLOY_PATH)" | Out-Null
+      docker compose config > "$(DEPLOY_PATH)\docker-compose.yml"
+      docker compose up -d --force-recreate
+    displayName: Deploy containers
