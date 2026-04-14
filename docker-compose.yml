@@ -8,6 +8,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer-data:/data
+    networks:
+      - portainer-network
     logging:
       driver: "json-file"
       options:
@@ -17,3 +19,8 @@ services:
 volumes:
   portainer-data:
     name: portainer-data
+
+networks:
+  portainer-network:
+    name: portainer-network
+    driver: bridge
