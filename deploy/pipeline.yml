@@ -36,6 +36,7 @@ steps:
       docker stop portainer
       docker rm portainer
       $ErrorActionPreference = 'Continue'
+      $LASTEXITCODE = 0
     displayName: Remove existing containers
 
   - powershell: |
