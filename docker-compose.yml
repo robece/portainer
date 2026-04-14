@@ -16,3 +16,4 @@ services:
 
 volumes:
   portainer-data:
+    name: portainer-data
