@@ -27,14 +27,14 @@ $DOCKER compose down
 
 # -- Remove image -------------------------------------------------------------
 read -rp "[?] Remove the Docker image as well? (y/N): " REMOVE_IMAGE
-if [[ "${REMOVE_IMAGE,,}" == "y" ]]; then
+if [[ "$(echo "$REMOVE_IMAGE" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
     echo "[*] Removing image..."
     $DOCKER rmi "portainer/portainer-ce:2.39.1" 2>/dev/null && echo "[ok] Image removed." || echo "[!] Image not found, skipping."
 fi
 
 # -- Remove volume ------------------------------------------------------------
 read -rp "[?] Remove the data volume? This will DELETE all data. (y/N): " REMOVE_VOL
-if [[ "${REMOVE_VOL,,}" == "y" ]]; then
+if [[ "$(echo "$REMOVE_VOL" | tr '[:upper:]' '[:lower:]')" == "y" ]]; then
     echo "[*] Removing volume..."
     $DOCKER volume rm portainer-data 2>/dev/null && echo "[ok] Volume removed." || echo "[!] Volume not found, skipping."
 fi
