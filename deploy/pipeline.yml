@@ -17,7 +17,8 @@ steps:
       git config --global core.autocrlf false
       if (Test-Path "$(REPO_PATH)\.git") {
         Write-Host "[*] Repo exists, pulling latest..."
-        git -C "$(REPO_PATH)" pull "https://$(GITHUB_PAT)@github.com/robece/portainer.git"
+        git -C "$(REPO_PATH)" fetch "https://$(GITHUB_PAT)@github.com/robece/portainer.git"
+        git -C "$(REPO_PATH)" reset --hard FETCH_HEAD
       } else {
         Write-Host "[*] First deploy, cloning repo..."
         New-Item -ItemType Directory -Force -Path "C:\repos" | Out-Null
