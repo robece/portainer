@@ -2,7 +2,7 @@ trigger:
   - main
 
 pool:
-  name: Pool #1
+  name: "Pool #1"
 
 variables:
   - name: REPO_PATH
